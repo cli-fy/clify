@@ -14,7 +14,7 @@
     "template"
   ],
   "scripts": {
-    "build": "tsdown --config tsdown.config.ts",
+    "build": "tsdown --config tsdown.config.mjs --config-loader native",
     "coverage": "vitest run --config vitest.config.ts --coverage",
     "test": "vitest run --config vitest.config.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
