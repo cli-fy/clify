@@ -8,6 +8,9 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -17,6 +20,7 @@ jobs:
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
+      - run: npm install -g npm@latest
       - run: bun i --frozen-lockfile
       - run: bun run lint
       - run: bun run typecheck
@@ -24,7 +28,5 @@ jobs:
       - run: bun run coverage
       - run: bun run knip
       - run: bun run build
-      - run: bun publish --cwd packages/cli --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --access public --provenance
+        working-directory: packages/cli
