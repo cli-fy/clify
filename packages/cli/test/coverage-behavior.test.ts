@@ -288,6 +288,26 @@ describe('spec edge behavior', () => {
     expect(missingGit.stderr).toContain('INSTALL_FAILED')
   })
 
+  it('forwards plugin validation warnings during install and cached loads', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'clify-warning-forwarding-'))
+    const repo = await makeRemote(root)
+    await writePluginRepo(
+      repo,
+      '0.2.0',
+      "export default { name: 'other', fetch() {}, async serve() { return 0 } }\n",
+    )
+    await git(repo, ['add', '.'])
+    await git(repo, ['commit', '-m', 'warn on name mismatch'])
+
+    const install = harness(root)
+    await expect(runCli(['add', 'acme/demo'], install.options)).resolves.toBe(0)
+    expect(install.stderr).toContain('plugin name mismatch')
+
+    const cached = harness(root)
+    await expect(runCli(['acme/demo'], cached.options)).resolves.toBe(0)
+    expect(cached.stderr).toContain('plugin name mismatch')
+  })
+
   it('resolves current branch fallback for detached checkouts', async () => {
     const root = await mkdtemp(join(tmpdir(), 'clify-detached-'))
     const repo = await makeRemote(root)

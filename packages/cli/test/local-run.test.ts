@@ -84,6 +84,21 @@ describe('local plugin runs', () => {
     expect(globalThis.__clifyLocalRun).toEqual({ argv: [] })
   })
 
+  it('forwards local plugin validation warnings', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'clify-local-'))
+    const plugin = join(cwd, 'plugin')
+    await writeLocalPlugin(plugin)
+    await writeFile(
+      join(plugin, 'dist/index.js'),
+      "export default { name: 'other', fetch() {}, async serve() { return 0 } }\n",
+    )
+    const io = harness(cwd)
+
+    await expect(runCli(['./plugin'], io.options)).resolves.toBe(0)
+
+    expect(io.stderr).toContain('plugin name mismatch')
+  })
+
   it('rejects local paths for management commands and cache-only flags', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'clify-local-'))
     const plugin = join(cwd, 'plugin')
