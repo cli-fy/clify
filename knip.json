@@ -1,0 +1,12 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": ["packages/template/**"],
+  "ignoreDependencies": ["@typescript/native-preview"],
+  "workspaces": {
+    "packages/cli": {
+      "entry": ["test/**/*.test.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts", "*.config.ts"],
+      "ignoreDependencies": ["incur", "proper-lockfile", "zod"]
+    }
+  }
+}

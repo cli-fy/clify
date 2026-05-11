@@ -1,0 +1,25 @@
+{
+  "name": "my-plugin",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "repository": "github:<owner>/<repo>",
+  "clify": {
+    "name": "my-plugin",
+    "description": "Describe what this plugin does in one sentence.",
+    "entry": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "prepack": "tsdown"
+  },
+  "devDependencies": {
+    "@hono/zod-openapi": "^0.x",
+    "hono": "^4.x",
+    "incur": "^0.x",
+    "tsdown": "^0.x",
+    "typescript": "^5.x",
+    "zod": "^3.x"
+  }
+}
