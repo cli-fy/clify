@@ -152,12 +152,9 @@ function warnOnNameMismatch(
   options: ValidatePluginOptions,
 ) {
   const cliName = getCliName(cli)
-  const repoName = options.repoName
-  const packageMismatch = cliName !== null && cliName !== manifest.pluginName
-  const repoMismatch = cliName !== null && repoName !== undefined && cliName !== repoName
-  if (!packageMismatch && !repoMismatch) return
+  if (cliName === null || cliName === manifest.pluginName) return
   options.warn?.(
-    `warn: plugin name mismatch — Cli='${cliName}' / package.json clify.name='${manifest.pluginName}' / repo='${repoName ?? ''}'`,
+    `warn: plugin name mismatch — Cli='${cliName}' / package.json clify.name='${manifest.pluginName}' / repo='${options.repoName ?? ''}'`,
   )
 }
 

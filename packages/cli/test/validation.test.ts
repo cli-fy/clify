@@ -72,6 +72,32 @@ describe('plugin validation', () => {
     expect(typeof result.cli.fetch).toBe('function')
   })
 
+  it('does not warn when the plugin name matches and the repo name differs', async () => {
+    const root = await pluginRoot()
+    const warnings: string[] = []
+    await writePlugin(root, {
+      packageJson: {
+        name: 'clify-hackernews',
+        version: '0.1.0',
+        type: 'module',
+        repository: 'github:cli-fy/news.ycombinator.com',
+        clify: {
+          name: 'hackernews',
+          description: 'Fetch data from Hacker News via RESTful API.',
+          entry: './dist/index.js',
+        },
+      },
+      entry: "export default { name: 'hackernews', fetch() {}, async serve() { return 0 } }\n",
+    })
+
+    await validatePlugin(root, {
+      repoName: 'news.ycombinator.com',
+      warn: (message) => warnings.push(message),
+    })
+
+    expect(warnings).toEqual([])
+  })
+
   it('rejects invalid manifests with INVALID_PLUGIN', async () => {
     const root = await pluginRoot()
     await writePlugin(root, {
